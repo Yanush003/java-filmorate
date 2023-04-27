@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,12 +35,12 @@ class FilmControllerTest {
     ObjectMapper objectMapper;
 
     @BeforeAll
-    public static void beforeAll(){
+    public static void beforeAll() {
 
     }
 
     @BeforeEach
-    public void clearList(){
+    public void clearList() {
         List<Film> listFilm = filmService.getListFilm();
         listFilm.clear();
     }

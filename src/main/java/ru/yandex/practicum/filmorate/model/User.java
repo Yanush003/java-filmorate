@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Past;
 import lombok.Builder;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.annotation.ValidDate;
+
 
 import java.time.LocalDate;
 
