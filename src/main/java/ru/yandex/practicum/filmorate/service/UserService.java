@@ -15,7 +15,7 @@ public class UserService {
     private List<User> users = new ArrayList<>();
     private final static Logger log = LoggerFactory.getLogger(UserService.class);
 
-    public User createUser(User user){
+    public User createUser(User user) {
         log.info("User create");
         user.setId(1);
         this.user = user;
@@ -23,7 +23,7 @@ public class UserService {
         return this.user;
     }
 
-    public User updateUser(User user){
+    public User updateUser(User user) {
         this.user.setName(user.getName());
         return this.user;
     }
