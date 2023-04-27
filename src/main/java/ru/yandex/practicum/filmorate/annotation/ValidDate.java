@@ -20,12 +20,3 @@ public @interface ValidDate {
 
     Class<? extends Payload>[] payload() default {};
 }
-
-class MyDateValidator implements ConstraintValidator<ValidDate, LocalDate> {
-    public void initialize(ValidDate constraint) {
-    }
-
-    public boolean isValid(LocalDate value, ConstraintValidatorContext context) {
-        return value.isAfter(LocalDate.of(1895, 12, 28));
-    }
-}
