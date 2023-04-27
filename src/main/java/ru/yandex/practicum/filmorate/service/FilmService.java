@@ -13,7 +13,7 @@ import java.util.List;
 public class FilmService {
     private Film film;
     private List<Film> films = new ArrayList<>();
-    private final static Logger log = LoggerFactory.getLogger(FilmService.class);
+    private final Logger log = LoggerFactory.getLogger(FilmService.class);
 
     public Film saveFilm(Film film) {
         log.info("Film Save");

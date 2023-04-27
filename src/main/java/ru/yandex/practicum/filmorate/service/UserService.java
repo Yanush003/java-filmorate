@@ -12,7 +12,7 @@ import java.util.List;
 public class UserService {
     private User user;
     private List<User> users = new ArrayList<>();
-    private final static Logger log = LoggerFactory.getLogger(UserService.class);
+    private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     public User createUser(User user) {
         log.info("User create");
