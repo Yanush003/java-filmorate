@@ -15,16 +15,12 @@ import java.time.LocalDate;
 public class User {
 
     private Integer id;
-
     @NotEmpty
     private String name;
-
     @NotBlank
     private String login;
-
     @Email
     private String email;
-
     @Past
     private LocalDate birthday;
 
