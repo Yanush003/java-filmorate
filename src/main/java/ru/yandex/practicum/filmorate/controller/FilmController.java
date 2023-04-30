@@ -11,22 +11,22 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/films")
+@RequestMapping("/films")
 @RequiredArgsConstructor
 public class FilmController {
     private final FilmService filmService;
 
-    @PostMapping("/save")
+    @PostMapping
     public Film saveFilm(@Valid @RequestBody Film film) {
         return filmService.saveFilm(film);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         return filmService.updateFilm(film);
     }
 
-    @GetMapping("/get")
+    @GetMapping
     public List<Film> getListFilm() {
         return filmService.getListFilm();
     }

@@ -10,22 +10,22 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/create")
+    @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         return userService.createUser(user);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
         return userService.updateUser(user);
     }
 
-    @GetMapping("/get")
+    @GetMapping
     public List<User> getListUser() {
         return userService.getUserList();
     }
