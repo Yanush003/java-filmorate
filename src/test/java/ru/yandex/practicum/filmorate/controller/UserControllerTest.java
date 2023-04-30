@@ -127,7 +127,10 @@ class UserControllerTest {
     public void saveNotValuedNameAndReleaseDateUser_thenStatus400anExceptionThrown() throws Exception {
         User user1 = User.builder()
                 .id(null)
-                .birthday(LocalDate.of(1600, 12, 1))
+                .name("")
+                .birthday(LocalDate.of(1987, 12, 1))
+                .email("123@mail.com")
+                .login("")
                 .build();
 
         mockMvc.perform(
