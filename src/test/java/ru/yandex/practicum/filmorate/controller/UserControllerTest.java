@@ -57,7 +57,7 @@ class UserControllerTest {
                 .build();
 
         mockMvc.perform(
-                        post("/api/user/create")
+                        post("/api/users/create")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsBytes(user1)))
                 .andDo(print())
@@ -85,7 +85,7 @@ class UserControllerTest {
         userService.createUser(user1);
 
         mockMvc.perform(
-                        put("/api/user/update")
+                        put("/api/users/update")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsString(user2)))
                 .andDo(print())
@@ -117,7 +117,7 @@ class UserControllerTest {
         userService.createUser(user1);
         userService.createUser(user2);
 
-        mockMvc.perform(get("/api/user/get"))
+        mockMvc.perform(get("/api/users/get"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(users)));
@@ -134,7 +134,7 @@ class UserControllerTest {
                 .build();
 
         mockMvc.perform(
-                        post("/api/user/create")
+                        post("/api/users/create")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsBytes(user1)))
                 .andExpect(status().isBadRequest())

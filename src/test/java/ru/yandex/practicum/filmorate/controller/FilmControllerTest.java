@@ -51,7 +51,7 @@ class FilmControllerTest {
         Film film1 = new Film(1, "Titanic", "sdg", LocalDate.of(1954, 2, 1), 1);
 
         mockMvc.perform(
-                        post("/api/film/save")
+                        post("/api/films/save")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsBytes(film)))
                 .andDo(print())
@@ -69,7 +69,7 @@ class FilmControllerTest {
         filmService.saveFilm(film);
 
         mockMvc.perform(
-                        put("/api/film/update")
+                        put("/api/films/update")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsString(film1)))
                 .andDo(print())
@@ -91,7 +91,7 @@ class FilmControllerTest {
         filmService.saveFilm(film2);
         filmService.saveFilm(film3);
 
-        mockMvc.perform(get("/api/film/get"))
+        mockMvc.perform(get("/api/films/get"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(films)));
@@ -102,7 +102,7 @@ class FilmControllerTest {
         Film film = new Film(null, "", "sdg", LocalDate.of(1800, 2, 1), 1);
 
         mockMvc.perform(
-                        post("/api/film/save")
+                        post("/api/films/save")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsBytes(film)))
                 .andExpect(status().isBadRequest())

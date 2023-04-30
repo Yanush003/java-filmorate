@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/film")
+@RequestMapping("/api/films")
 @RequiredArgsConstructor
 public class FilmController {
     private final FilmService filmService;
