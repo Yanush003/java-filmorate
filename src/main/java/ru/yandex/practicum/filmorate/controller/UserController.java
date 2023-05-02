@@ -17,7 +17,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        return userService.createUser(user);
+        return userService.saveUser(user);
     }
 
     @PutMapping
@@ -27,6 +27,6 @@ public class UserController {
 
     @GetMapping
     public List<User> getListUser() {
-        return userService.getUserList();
+        return userService.getListUser();
     }
 }

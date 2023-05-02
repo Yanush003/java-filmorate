@@ -35,26 +35,13 @@ class UserControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        List<User> userList = userService.getUserList();
-        userList.clear();
+        userService.clearUsers();
     }
 
     @Test
     void saveUser_success() throws Exception {
-        User user1 = User.builder()
-                .id(null)
-                .name("Alex")
-                .birthday(LocalDate.of(1987, 12, 1))
-                .email("123@mail.com")
-                .login("123")
-                .build();
-        User user2 = User.builder()
-                .id(1)
-                .name("Alex")
-                .birthday(LocalDate.of(1987, 12, 1))
-                .email("123@mail.com")
-                .login("123")
-                .build();
+        User user1 = new User(null,"Alex", "123",  "123@mail.com",LocalDate.of(1987, 12, 1) );
+        User user2 = new User(0,"Alex", "123",  "123@mail.com",LocalDate.of(1987, 12, 1) );
 
         mockMvc.perform(
                         post("/users")
@@ -63,26 +50,14 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(user2)))
-                .andExpect(jsonPath("$.id").value("1"));
+                .andExpect(jsonPath("$.id").value("0"));
     }
 
     @Test
     void updateUser_success() throws Exception {
-        User user1 = User.builder()
-                .id(null)
-                .name("Alex1")
-                .birthday(LocalDate.of(1987, 12, 1))
-                .email("123@mail.com")
-                .login("123")
-                .build();
-        User user2 = User.builder()
-                .id(1)
-                .name("Alex2")
-                .birthday(LocalDate.of(1987, 12, 1))
-                .email("123@mail.com")
-                .login("123")
-                .build();
-        userService.createUser(user1);
+        User user1 = new User(null,"Alex", "123",  "123@mail.com",LocalDate.of(1987, 12, 1) );
+        User user2 = new User(0,"Alex2", "123",  "123@mail.com",LocalDate.of(1987, 12, 1) );
+        userService.saveUser(user1);
 
         mockMvc.perform(
                         put("/users")
@@ -91,31 +66,18 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(user2)))
-                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.id").value("0"))
                 .andExpect(jsonPath("$.name").value("Alex2"));
     }
 
     @Test
     void getListUser_success() throws Exception {
-
-        User user1 = User.builder()
-                .id(null)
-                .name("Alex")
-                .birthday(LocalDate.of(1987, 12, 1))
-                .email("123@mail.com")
-                .login("123")
-                .build();
-        User user2 = User.builder()
-                .id(1)
-                .name("Alex")
-                .birthday(LocalDate.of(1987, 12, 1))
-                .email("123@mail.com")
-                .login("123")
-                .build();
+        User user1 = new User(null,"Alex", "123",  "123@mail.com",LocalDate.of(1987, 12, 1) );
+        User user2 = new User(0,"Alex", "123",  "123@mail.com",LocalDate.of(1987, 12, 1) );
         List<User> users = List.of(user1, user2);
 
-        userService.createUser(user1);
-        userService.createUser(user2);
+        userService.saveUser(user1);
+        userService.saveUser(user2);
 
         mockMvc.perform(get("/users"))
                 .andDo(print())
@@ -125,13 +87,7 @@ class UserControllerTest {
 
     @Test
     public void saveNotValuedNameAndReleaseDateUser_thenStatus400anExceptionThrown() throws Exception {
-        User user1 = User.builder()
-                .id(null)
-                .name("")
-                .birthday(LocalDate.of(1987, 12, 1))
-                .email("123@mail.com")
-                .login("")
-                .build();
+        User user1 = new User(null,"Alex", "123",  "123",LocalDate.of(1987, 12, 1) );
 
         mockMvc.perform(
                         post("/users")

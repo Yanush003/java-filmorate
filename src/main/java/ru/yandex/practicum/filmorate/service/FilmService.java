@@ -6,30 +6,40 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
 public class FilmService {
-    private Film film;
-    private List<Film> films = new ArrayList<>();
+
+    private Integer countId = 0;
+
+    private Map<Integer, Film> filmMap = new HashMap<>();
     private final Logger log = LoggerFactory.getLogger(FilmService.class);
 
     public Film saveFilm(Film film) {
         log.info("Film Save");
-        film.setId(1);
-        this.film = film;
-        films.add(film);
-        return this.film;
+        film.setId(countId++);
+        filmMap.put(film.getId(), film);
+        return film;
     }
 
     public Film updateFilm(Film film) {
-        this.film.setName(film.getName());
-        return this.film;
+        Film film1 = filmMap.get(film.getId());
+        film.setId(film1.getId());
+        filmMap.put(film.getId(), film);
+        return film;
     }
 
     public List<Film> getListFilm() {
-        return this.films;
+        return new ArrayList<>(filmMap.values());
+    }
+
+    public void clearFilms() {
+        this.filmMap.clear();
+        countId = 0;
     }
 
 }

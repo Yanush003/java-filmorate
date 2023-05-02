@@ -41,14 +41,13 @@ class FilmControllerTest {
 
     @BeforeEach
     public void clearList() {
-        List<Film> listFilm = filmService.getListFilm();
-        listFilm.clear();
+       filmService.clearFilms();
     }
 
     @Test
     void saveFilm() throws Exception {
         Film film = new Film(null, "Titanic", "sdg", LocalDate.of(1954, 2, 1), 1);
-        Film film1 = new Film(1, "Titanic", "sdg", LocalDate.of(1954, 2, 1), 1);
+        Film film1 = new Film(0, "Titanic", "sdg", LocalDate.of(1954, 2, 1), 1);
 
         mockMvc.perform(
                         post("/films")
@@ -57,14 +56,14 @@ class FilmControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(film1)))
-                .andExpect(jsonPath("$.id").value("1"));
+                .andExpect(jsonPath("$.id").value("0"));
     }
 
     @Test
     void updateFilm() throws Exception {
-        Film film = new Film(1, "Titanic1", "1", LocalDate.of(1954, 2, 1), 1);
-        Film filmExpect = new Film(1, "Titanic2", "1", LocalDate.of(1954, 2, 1), 1);
-        Film film1 = new Film(2, "Titanic2", "2", LocalDate.of(1954, 2, 1), 1);
+        Film film = new Film(null, "Titanic1", "1", LocalDate.of(1954, 2, 1), 1);
+        Film filmExpect = new Film(0, "Titanic2", "2", LocalDate.of(1954, 2, 1), 1);
+        Film film1 = new Film(0, "Titanic2", "2", LocalDate.of(1954, 2, 1), 1);
 
         filmService.saveFilm(film);
 
@@ -75,7 +74,7 @@ class FilmControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(filmExpect)))
-                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.id").value("0"))
                 .andExpect(jsonPath("$.name").value("Titanic2"));
     }
 
