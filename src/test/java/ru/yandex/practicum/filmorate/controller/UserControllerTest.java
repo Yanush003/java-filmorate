@@ -40,8 +40,8 @@ class UserControllerTest {
 
     @Test
     void saveUser_success() throws Exception {
-        User user1 = new User(null,"Alex", "123",  "123@mail.com",LocalDate.of(1987, 12, 1) );
-        User user2 = new User(0,"Alex", "123",  "123@mail.com",LocalDate.of(1987, 12, 1) );
+        User user1 = new User(null, "Alex", "123", "123@mail.com", LocalDate.of(1987, 12, 1));
+        User user2 = new User(0, "Alex", "123", "123@mail.com", LocalDate.of(1987, 12, 1));
 
         mockMvc.perform(
                         post("/users")
@@ -55,8 +55,8 @@ class UserControllerTest {
 
     @Test
     void updateUser_success() throws Exception {
-        User user1 = new User(null,"Alex", "123",  "123@mail.com",LocalDate.of(1987, 12, 1) );
-        User user2 = new User(0,"Alex2", "123",  "123@mail.com",LocalDate.of(1987, 12, 1) );
+        User user1 = new User(null, "Alex", "123", "123@mail.com", LocalDate.of(1987, 12, 1));
+        User user2 = new User(0, "Alex2", "123", "123@mail.com", LocalDate.of(1987, 12, 1));
         userService.saveUser(user1);
 
         mockMvc.perform(
@@ -72,8 +72,8 @@ class UserControllerTest {
 
     @Test
     void getListUser_success() throws Exception {
-        User user1 = new User(null,"Alex", "123",  "123@mail.com",LocalDate.of(1987, 12, 1) );
-        User user2 = new User(0,"Alex", "123",  "123@mail.com",LocalDate.of(1987, 12, 1) );
+        User user1 = new User(null, "Alex", "123", "123@mail.com", LocalDate.of(1987, 12, 1));
+        User user2 = new User(0, "Alex", "123", "123@mail.com", LocalDate.of(1987, 12, 1));
         List<User> users = List.of(user1, user2);
 
         userService.saveUser(user1);
@@ -87,7 +87,7 @@ class UserControllerTest {
 
     @Test
     public void saveNotValuedNameAndReleaseDateUser_thenStatus400anExceptionThrown() throws Exception {
-        User user1 = new User(null,"Alex", "123",  "123",LocalDate.of(1987, 12, 1) );
+        User user1 = new User(null, "Alex", "123", "123", LocalDate.of(1987, 12, 1));
 
         mockMvc.perform(
                         post("/users")

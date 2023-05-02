@@ -41,7 +41,7 @@ class FilmControllerTest {
 
     @BeforeEach
     public void clearList() {
-       filmService.clearFilms();
+        filmService.clearFilms();
     }
 
     @Test
