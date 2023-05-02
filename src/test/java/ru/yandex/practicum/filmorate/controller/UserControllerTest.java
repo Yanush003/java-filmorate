@@ -56,7 +56,8 @@ class UserControllerTest {
     @Test
     void updateUser_success() throws Exception {
         User user1 = new User(null, "Alex", "123", "123@mail.com", LocalDate.of(1987, 12, 1));
-        User user2 = new User(0, "Alex2", "123", "123@mail.com", LocalDate.of(1987, 12, 1));
+        User user2 = new User(1, "Alex2", "123", "123@mail.com", LocalDate.of(1987, 12, 1));
+        userService.saveUser(user1);
         userService.saveUser(user1);
 
         mockMvc.perform(
@@ -66,7 +67,7 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(user2)))
-                .andExpect(jsonPath("$.id").value("0"))
+                .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("Alex2"));
     }
 

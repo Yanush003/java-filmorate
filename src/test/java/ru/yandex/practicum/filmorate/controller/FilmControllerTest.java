@@ -62,9 +62,10 @@ class FilmControllerTest {
     @Test
     void updateFilm() throws Exception {
         Film film = new Film(null, "Titanic1", "1", LocalDate.of(1954, 2, 1), 1);
-        Film filmExpect = new Film(0, "Titanic2", "2", LocalDate.of(1954, 2, 1), 1);
-        Film film1 = new Film(0, "Titanic2", "2", LocalDate.of(1954, 2, 1), 1);
+        Film filmExpect = new Film(1, "Titanic2", "2", LocalDate.of(1954, 2, 1), 1);
+        Film film1 = new Film(1, "Titanic2", "2", LocalDate.of(1954, 2, 1), 1);
 
+        filmService.saveFilm(film);
         filmService.saveFilm(film);
 
         mockMvc.perform(
@@ -74,7 +75,7 @@ class FilmControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(filmExpect)))
-                .andExpect(jsonPath("$.id").value("0"))
+                .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("Titanic2"));
     }
 
