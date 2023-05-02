@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class Film {
+    @Positive
     private Integer id;
     @NotEmpty
     private String name;
