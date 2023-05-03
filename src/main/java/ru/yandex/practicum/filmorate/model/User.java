@@ -8,14 +8,13 @@ import java.time.LocalDate;
 @Data
 public class User {
     private Integer id;
-    @NotEmpty
     private String name;
-    @NotBlank
+    @NotBlank(message = "Логин не может быть пустым")
     @Pattern(regexp = "\\S+", message = "Логин не может содержать пробелы")
     private String login;
-    @Email
+    @Email(message = "Введенный email не соответствует формату email-адреса")
     private String email;
-    @Past
+    @PastOrPresent(message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
 
     public User(Integer id, String name, String login, String email, LocalDate birthday) {

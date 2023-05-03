@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.ValidDate;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Film {
     private Integer id;
-    @NotEmpty
+    @NotBlank
     private String name;
     @Size(max = 200)
     private String description;
