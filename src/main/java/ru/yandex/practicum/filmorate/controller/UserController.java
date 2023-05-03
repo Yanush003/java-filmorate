@@ -18,7 +18,7 @@ public class UserController {
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         if (user.getName() == null || user.getName().equals("")) {
-            user.setName(user.getEmail());
+            user.setName(user.getLogin());
         }
         return userService.saveUser(user);
     }
