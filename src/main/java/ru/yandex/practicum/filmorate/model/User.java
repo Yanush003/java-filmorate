@@ -8,7 +8,6 @@ import java.time.LocalDate;
 @Data
 public class User {
     private Integer id;
-    @NotEmpty
     private String name;
     @NotBlank(message = "Логин не может быть пустым")
     @Pattern(regexp = "\\S+", message = "Логин не может содержать пробелы")
@@ -21,6 +20,13 @@ public class User {
     public User(Integer id, String name, String login, String email, LocalDate birthday) {
         this.id = id;
         this.name = (name.isEmpty()) ? login : name;
+        this.login = login.replace(" ", "");
+        this.email = email;
+        this.birthday = birthday;
+    }
+
+    public User(Integer id, String login, String email, LocalDate birthday) {
+        this.id = id;
         this.login = login.replace(" ", "");
         this.email = email;
         this.birthday = birthday;
