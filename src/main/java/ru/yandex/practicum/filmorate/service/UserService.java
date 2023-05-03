@@ -15,6 +15,9 @@ public class UserService {
     private final Logger log = LoggerFactory.getLogger(FilmService.class);
 
     public User saveUser(User user) {
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
+        }
         user.setId(countId++);
         userMap.put(user.getId(), user);
         log.info("User Save " + user);

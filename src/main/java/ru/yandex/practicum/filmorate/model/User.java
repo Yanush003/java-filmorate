@@ -12,6 +12,7 @@ public class User {
     @NotEmpty
     private String name;
     @NotBlank
+    @Pattern(regexp = "\\S+", message = "Логин не может содержать пробелы")
     private String login;
     @Email
     private String email;
