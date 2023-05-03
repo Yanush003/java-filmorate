@@ -17,10 +17,10 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        if (user.getName() == null || user.getName().equals("")){
+        if (user.getName() == null || user.getName().equals("")) {
             user.setName(user.getEmail());
         }
-            return userService.saveUser(user);
+        return userService.saveUser(user);
     }
 
     @PutMapping
