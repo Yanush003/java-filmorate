@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Data
 public class User {
-    @Positive
     private Integer id;
     @NotEmpty
     private String name;
