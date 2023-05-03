@@ -19,15 +19,15 @@ public class User {
 
     public User(Integer id, String name, String login, String email, LocalDate birthday) {
         this.id = id;
-        this.name = (name.isEmpty()) ? login : name;
-        this.login = login.replace(" ", "");
+        this.name = name;
+        this.login = login;
         this.email = email;
         this.birthday = birthday;
     }
 
     public User(Integer id, String login, String email, LocalDate birthday) {
         this.id = id;
-        this.login = login.replace(" ", "");
+        this.login = login;
         this.email = email;
         this.birthday = birthday;
     }
