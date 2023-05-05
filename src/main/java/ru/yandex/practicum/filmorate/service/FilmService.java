@@ -8,13 +8,12 @@ import ru.yandex.practicum.filmorate.model.Film;
 import javax.validation.ConstraintViolationException;
 import java.util.*;
 
-
 @Service
 public class FilmService {
 
-    private Integer countId = 1;
     private final Map<Integer, Film> filmMap = new HashMap<>();
     private final Logger log = LoggerFactory.getLogger(FilmService.class);
+    private Integer countId = 1;
 
     public Film saveFilm(Film film) {
         film.setId(countId++);

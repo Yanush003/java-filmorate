@@ -10,9 +10,10 @@ import java.util.*;
 
 @Service
 public class UserService {
-    private Integer countId = 1;
+
     private final Map<Integer, User> userMap = new HashMap<>();
     private final Logger log = LoggerFactory.getLogger(FilmService.class);
+    private Integer countId = 1;
 
     public User saveUser(User user) {
         if (user.getName() == null) {
