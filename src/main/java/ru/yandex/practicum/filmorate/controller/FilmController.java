@@ -9,12 +9,34 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/films")
 @RequiredArgsConstructor
 public class FilmController {
     private final FilmService filmService;
+
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Integer id) {
+        return filmService.getFilmById(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void putLike(@PathVariable Integer id, @PathVariable Integer userId) {
+        filmService.putLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void deleteLike(@PathVariable Integer id, @PathVariable Integer userId) {
+        filmService.deleteLike(id, userId);
+    }
+
+    @GetMapping("/popular?count={count}")
+    public Set<Film> getFilms(@PathVariable Integer count) {
+        if (count == null) count = 10;
+        return filmService.getFilmsSet(count);
+    }
 
     @PostMapping
     public Film saveFilm(@Valid @RequestBody Film film) {
@@ -27,9 +49,8 @@ public class FilmController {
     }
 
     @GetMapping
-    public List<Film> getListFilm() {
+    public List<Film> getAllFilms() {
         return filmService.getListFilm();
     }
-
 
 }

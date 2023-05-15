@@ -1,46 +1,54 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
-import javax.validation.ConstraintViolationException;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class FilmService {
 
-    private final Map<Integer, Film> filmMap = new HashMap<>();
-    private final Logger log = LoggerFactory.getLogger(FilmService.class);
-    private Integer countId = 1;
+    private final InMemoryFilmStorage storage;
+
+    public FilmService(InMemoryFilmStorage storage) {
+        this.storage = storage;
+    }
+
+    public Film getFilmById(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException();
+        }
+        return storage.getFilm(id);
+    }
+
+    public void putLike(Integer id, Integer like) {
+        storage.putLike(id, like);
+    }
+
+    public void deleteLike(Integer id, Integer userId) {
+        storage.deleteLike(id, userId);
+    }
+
+    public Set<Film> getFilmsSet(Integer count) {
+        return storage.getFilmsSet(count);
+    }
 
     public Film saveFilm(Film film) {
-        film.setId(countId++);
-        filmMap.put(film.getId(), film);
-        log.info("Film Save " + film);
-        return film;
+        return storage.saveFilm(film);
     }
 
     public Film updateFilm(Film film) {
-        if (!filmMap.containsKey(film.getId())) {
-            throw new ConstraintViolationException(Set.of());
-        }
-        Film film1 = filmMap.get(film.getId());
-        film.setId(film1.getId());
-        filmMap.put(film.getId(), film);
-        log.info("Film Update " + film);
-        return film;
+        return storage.updateFilm(film);
     }
 
     public List<Film> getListFilm() {
-        log.info("Get Films " + filmMap.values());
-        return new ArrayList<>(filmMap.values());
+        return storage.getListFilm();
     }
 
     public void clearFilms() {
-        this.filmMap.clear();
-        countId = 0;
+        storage.clearFilms();
     }
 
 }
