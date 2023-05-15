@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.exception.NoSuchCustomerException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
-import javax.validation.ConstraintViolationException;
 import java.util.*;
 
 @Component
