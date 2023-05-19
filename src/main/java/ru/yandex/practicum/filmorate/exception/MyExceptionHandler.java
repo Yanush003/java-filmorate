@@ -12,6 +12,16 @@ import javax.validation.ValidationException;
 @RestControllerAdvice
 @ControllerAdvice
 public class MyExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handlerNotFoundException(MethodArgumentNotValidException e) {
+        Map<String, String> errors = new LinkedHashMap<>();
+        e.getBindingResult()
+                .getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<?> handlerIllegalArgumentException(ValidationException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
