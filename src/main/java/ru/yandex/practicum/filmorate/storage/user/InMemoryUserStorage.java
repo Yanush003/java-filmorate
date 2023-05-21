@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.exception.NoSuchCustomerException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
-import javax.validation.ConstraintViolationException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,7 +64,7 @@ public class InMemoryUserStorage implements UserStorage {
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
-        if(Objects.isNull(user.getId())){
+        if (Objects.isNull(user.getId())) {
             user.setId(countId++);
         }
         users.put(user.getId(), user);
@@ -91,13 +90,13 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     private void findUserInMap(Integer id) {
-        if(!users.containsKey(id)) throw new NoSuchCustomerException(String.format("Указанный id %s не найден", id));
+        if (!users.containsKey(id)) throw new NoSuchCustomerException(String.format("Указанный id %s не найден", id));
     }
 
     private User findAndSaveFriend(Integer id, Integer friendId) {
         User user1 = users.get(friendId);
         Set<Integer> user1Friends = user1.getFriendsId();
-        if(Objects.isNull(user1Friends) || user1Friends.isEmpty()){
+        if (Objects.isNull(user1Friends) || user1Friends.isEmpty()) {
             user1Friends = new HashSet<>();
         }
         user1Friends.add(friendId);
