@@ -34,7 +34,7 @@ public class FilmController {
 
     @GetMapping("/popular?count={count}")
     public Set<Film> getFilms(@PathVariable Integer count) {
-        if (count == null) count = 10;
+        if(count==null) count = 10;
         return filmService.getFilmsSet(count);
     }
 
@@ -52,5 +52,6 @@ public class FilmController {
     public List<Film> getAllFilms() {
         return filmService.getListFilm();
     }
+
 
 }

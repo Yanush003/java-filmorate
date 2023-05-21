@@ -25,7 +25,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private Integer countId = 1;
 
     public Film getFilm(Integer id) {
-        if (Objects.isNull(films.get(id))) throw new NoSuchCustomerException("not found");
+        if(Objects.isNull(films.get(id))) throw  new NoSuchCustomerException("not found");
         return films.get(id);
     }
 
@@ -41,7 +41,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
 
     public void deleteLike(Integer id, Integer userId) {
-        if (Objects.isNull(likesFilm.get(userId))) throw new NoSuchCustomerException("not found");
+        if(Objects.isNull(likesFilm.get(userId))) throw  new NoSuchCustomerException("not found");
         List<Integer> likes = likesFilm.get(userId);
         likes.remove(userId);
         likesFilm.put(id, likes);

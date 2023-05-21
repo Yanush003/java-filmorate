@@ -7,7 +7,9 @@ import ru.yandex.practicum.filmorate.exception.NoSuchCustomerException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
+import javax.validation.ConstraintViolationException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
@@ -40,10 +42,12 @@ public class InMemoryUserStorage implements UserStorage {
         return user.getFriendsId();
     }
 
-    public Set<Integer> getSetFriends(Integer id) {
+    public Set<User> getSetFriends(Integer id) {
         findUserInMap(id);
         User user = users.get(id);
-        return user.getFriendsId();
+        Set<Integer> friendsId = user.getFriendsId();
+        Set<User> collect = friendsId.stream().map(users::get).collect(Collectors.toSet());
+        return collect;
     }
 
     public Set<Integer> getSetCommonFriends(Integer id, Integer overId) {
@@ -61,7 +65,9 @@ public class InMemoryUserStorage implements UserStorage {
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
-        user.setId(countId++);
+        if(Objects.isNull(user.getId())){
+            user.setId(countId++);
+        }
         users.put(user.getId(), user);
         log.info("User Save " + user);
         return user;
@@ -69,8 +75,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     public User updateUser(User user) {
         findUserInMap(user.getId());
-        User user1 = users.get(user.getId());
-        user.setId(user1.getId());
         users.put(user.getId(), user);
         log.info("User update " + user);
         return user;
@@ -87,13 +91,13 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     private void findUserInMap(Integer id) {
-        if (!users.containsKey(id)) throw new NoSuchCustomerException("not found");
+        if(!users.containsKey(id)) throw new NoSuchCustomerException(String.format("Указанный id %s не найден", id));
     }
 
     private User findAndSaveFriend(Integer id, Integer friendId) {
         User user1 = users.get(friendId);
         Set<Integer> user1Friends = user1.getFriendsId();
-        if (Objects.isNull(user1Friends) || user1Friends.isEmpty()) {
+        if(Objects.isNull(user1Friends) || user1Friends.isEmpty()){
             user1Friends = new HashSet<>();
         }
         user1Friends.add(friendId);

@@ -11,7 +11,7 @@ public interface UserStorage {
 
     Set<Integer> deleteToFriendsById(Integer id, Integer friendId);
 
-    Set<Integer> getSetFriends(Integer id);
+    Set<User> getSetFriends(Integer id);
 
     Set<Integer> getSetCommonFriends(Integer id, Integer overId);
 }
