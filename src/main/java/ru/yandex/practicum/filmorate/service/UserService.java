@@ -25,7 +25,7 @@ public class UserService {
     }
 
     public void addToFriendsById(Integer id, Long friendId) {
-       storage.addToFriendsById(id, friendId);
+        storage.addToFriendsById(id, friendId);
     }
 
     public void deleteToFriendsById(Integer id, Long friendId) {
@@ -54,7 +54,7 @@ public class UserService {
 
     public User updateUser(User user) {
         storage.findUserInMap(user.getId());
-       return storage.updateUser(user);
+        return storage.updateUser(user);
     }
 
     public List<User> getListUser() {

@@ -33,7 +33,7 @@ public class FilmController {
 
     @GetMapping("/popular?count={count}")
     public List<Film> getFilms(@PathVariable Integer count) {
-        if(count==null) count = 10;
+        if (count == null) count = 10;
         return filmService.getFilms(count);
     }
 
