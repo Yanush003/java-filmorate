@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NoSuchCustomerException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
@@ -19,37 +20,40 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final InMemoryUserStorage userStorage;
 
     private final Map<Integer, Film> films = new HashMap<>();
-    private final Map<Integer, List<Integer>> likesFilm = new HashMap<>();
 
     private final Logger log = LoggerFactory.getLogger(FilmService.class);
     private Integer countId = 1;
 
     public Film getFilm(Integer id) {
-        if (Objects.isNull(films.get(id))) throw new NoSuchCustomerException("not found");
+        if(Objects.isNull(films.get(id))) throw  new NoSuchCustomerException("not found");
         return films.get(id);
     }
 
-    public void putLike(Integer id, Integer userId) {
-        if (likesFilm.get(id).isEmpty()) {
-            likesFilm.put(id, new ArrayList<>(userId));
+    public void putLike(Integer id, Long userId) {
+        if (Objects.isNull(userStorage.getUser(id))) {
+            User user = userStorage.getUser(id);
+            user.setFriendsId(new HashSet<>(userId.intValue()));
+            userStorage.saveUser(user);
         } else {
-            List<Integer> likes = likesFilm.get(id);
-            likes.add(userId);
-            likesFilm.put(id, likes);
+            User user = userStorage.getUser(id);
+            user.getFriendsId().add(userId);
+            userStorage.saveUser(user);
         }
     }
 
-
-    public void deleteLike(Integer id, Integer userId) {
-        if (Objects.isNull(likesFilm.get(userId))) throw new NoSuchCustomerException("not found");
-        List<Integer> likes = likesFilm.get(userId);
-        likes.remove(userId);
-        likesFilm.put(id, likes);
+    public void deleteLike(Integer id, Long userId) {
+        User user = userStorage.getUser(userId.intValue());
+        if(Objects.isNull(user)) throw  new NoSuchCustomerException("not found");
+        Set<Long> friendsId = user.getFriendsId();
+        friendsId.remove(userId);
+        userStorage.saveUser(user);
     }
 
-    public Set<Film> getFilmsSet(Integer count) {
-        Map<Integer, List<Integer>> integerListMap = sortMap(likesFilm, count);
-        return integerListMap.keySet().stream().map(films::get).collect(Collectors.toSet());
+    public List<Film> getFilms(Integer count) {
+        return films.values().stream()
+                .sorted(Comparator.comparingInt(x -> x.getUserIds().size()))
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
     public Film saveFilm(Film film) {

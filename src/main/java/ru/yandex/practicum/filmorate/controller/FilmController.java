@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/films")
@@ -23,19 +22,19 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public void putLike(@PathVariable Integer id, @PathVariable Integer userId) {
+    public void putLike(@PathVariable Integer id, @PathVariable Long userId) {
         filmService.putLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public void deleteLike(@PathVariable Integer id, @PathVariable Integer userId) {
+    public void deleteLike(@PathVariable Integer id, @PathVariable Long userId) {
         filmService.deleteLike(id, userId);
     }
 
     @GetMapping("/popular?count={count}")
-    public Set<Film> getFilms(@PathVariable Integer count) {
-        if (count == null) count = 10;
-        return filmService.getFilmsSet(count);
+    public List<Film> getFilms(@PathVariable Integer count) {
+        if(count==null) count = 10;
+        return filmService.getFilms(count);
     }
 
     @PostMapping
@@ -52,5 +51,6 @@ public class FilmController {
     public List<Film> getAllFilms() {
         return filmService.getListFilm();
     }
+
 
 }

@@ -1,11 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NoSuchCustomerException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,94 +11,72 @@ import java.util.stream.Collectors;
 public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Integer, User> users = new HashMap<>();
-    private final Logger log = LoggerFactory.getLogger(FilmService.class);
-    private Integer countId = 1;
 
-    public User getUser(Integer id) {
+    public void addToFriendsById(Integer id, Long friendId) {
         findUserInMap(id);
-        return users.get(id);
+        findUserInMap(friendId.intValue());
+        findAndSaveFriend(id, friendId);
+        findAndSaveFriend(friendId.intValue(), id.longValue());
     }
 
-    public Set<Integer> addToFriendsById(Integer id, Integer friendId) {
+    public void deleteToFriendsById(Integer id, Long friendId) {
         findUserInMap(id);
-        findUserInMap(friendId);
-        User user1 = findAndSaveFriend(id, friendId);
-        User user2 = findAndSaveFriend(friendId, id);
-        return user2.getFriendsId();
-    }
-
-    public Set<Integer> deleteToFriendsById(Integer id, Integer friendId) {
-        findUserInMap(id);
-        findUserInMap(friendId);
+        findUserInMap(friendId.intValue());
         User user = users.get(id);
-        Set<Integer> friendsId = user.getFriendsId();
+        Set<Long> friendsId = user.getFriendsId();
         friendsId.remove(friendId);
         user.setFriendsId(friendsId);
         users.put(id, user);
-        return user.getFriendsId();
     }
 
-    public Set<User> getSetFriends(Integer id) {
+    public List<User> getFriends(Integer id) {
         findUserInMap(id);
         User user = users.get(id);
-        Set<Integer> friendsId = user.getFriendsId();
-        Set<User> collect = friendsId.stream().map(users::get).collect(Collectors.toSet());
-        return collect;
+        List<Integer> friendsId = user.getFriendsId().stream().map(Long::intValue).collect(Collectors.toList());
+        return friendsId.stream().map(users::get).collect(Collectors.toList());
     }
 
-    public Set<Integer> getSetCommonFriends(Integer id, Integer overId) {
+    public List<User> getCommonFriends(Integer id, Long overId) {
         findUserInMap(id);
-        findUserInMap(overId);
+        findUserInMap(overId.intValue());
         User user1 = users.get(id);
-        User user2 = users.get(overId);
-        Set<Integer> friendsId = user1.getFriendsId();
-        Set<Integer> friendsId1 = user2.getFriendsId();
+        User user2 = users.get(overId.intValue());
+        Set<Long> friendsId = user1.getFriendsId();
+        Set<Long> friendsId1 = user2.getFriendsId();
         friendsId.retainAll(friendsId1);
-        return friendsId;
+        return friendsId.stream().map(Long::intValue).map(users::get).collect(Collectors.toList());
     }
 
-    public User saveUser(User user) {
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        }
-        if (Objects.isNull(user.getId())) {
-            user.setId(countId++);
-        }
+    public void saveUser(User user) {
         users.put(user.getId(), user);
-        log.info("User Save " + user);
-        return user;
     }
 
     public User updateUser(User user) {
-        findUserInMap(user.getId());
         users.put(user.getId(), user);
-        log.info("User update " + user);
         return user;
     }
 
-    public List<User> getListUser() {
-        log.info("Get Users " + this.users.values());
+    public User getUser(Integer id) {
+        return users.get(id);
+    }
+
+    public List<User> getUsers() {
         return new ArrayList<>(users.values());
     }
 
-    public void clearUsers() {
-        this.users.clear();
-        countId = 0;
-    }
-
-    private void findUserInMap(Integer id) {
+    public void findUserInMap(Integer id) {
         if (!users.containsKey(id)) throw new NoSuchCustomerException(String.format("Указанный id %s не найден", id));
+        users.get(id);
     }
 
-    private User findAndSaveFriend(Integer id, Integer friendId) {
-        User user1 = users.get(friendId);
-        Set<Integer> user1Friends = user1.getFriendsId();
+    private void findAndSaveFriend(Integer id, Long friendId) {
+        User user1 = users.get(id);
+        Set<Long> user1Friends = user1.getFriendsId();
         if (Objects.isNull(user1Friends) || user1Friends.isEmpty()) {
             user1Friends = new HashSet<>();
         }
         user1Friends.add(friendId);
         user1.setFriendsId(user1Friends);
         users.put(id, user1);
-        return user1;
     }
 }

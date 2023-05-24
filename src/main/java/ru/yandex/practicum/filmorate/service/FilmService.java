@@ -23,16 +23,16 @@ public class FilmService {
         return storage.getFilm(id);
     }
 
-    public void putLike(Integer id, Integer like) {
+    public void putLike(Integer id, Long like) {
         storage.putLike(id, like);
     }
 
-    public void deleteLike(Integer id, Integer userId) {
+    public void deleteLike(Integer id, Long userId) {
         storage.deleteLike(id, userId);
     }
 
-    public Set<Film> getFilmsSet(Integer count) {
-        return storage.getFilmsSet(count);
+    public List<Film> getFilms(Integer count) {
+        return storage.getFilms(count);
     }
 
     public Film saveFilm(Film film) {
