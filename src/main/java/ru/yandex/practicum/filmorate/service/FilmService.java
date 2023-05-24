@@ -5,7 +5,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class FilmService {

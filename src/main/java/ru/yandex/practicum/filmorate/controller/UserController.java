@@ -2,16 +2,12 @@ package ru.yandex.practicum.filmorate.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
