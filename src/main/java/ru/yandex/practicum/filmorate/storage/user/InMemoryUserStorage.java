@@ -32,11 +32,11 @@ public class InMemoryUserStorage implements UserStorage {
     public List<User> getFriends(Integer id) {
         findUserInMap(id);
         User user = users.get(id);
-       List <User> users1 =  user.getFriendsId().stream()
+        List<User> users1 = user.getFriendsId().stream()
                 .map(Long::intValue)
                 .map(users::get)
                 .collect(Collectors.toList());
-       return  users1;
+        return users1;
     }
 
     public List<User> getCommonFriends(Integer id, Long overId) {
