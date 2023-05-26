@@ -47,12 +47,16 @@ public class UserService {
         if (Objects.isNull(user.getId())) {
             user.setId(countId++);
         }
+        user.setFriendsId(new HashSet<>());
         storage.saveUser(user);
         log.info("User Save " + user);
         return user;
     }
 
     public User updateUser(User user) {
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
+        }
         storage.findUserInMap(user.getId());
         return storage.updateUser(user);
     }

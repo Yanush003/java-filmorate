@@ -32,8 +32,11 @@ public class InMemoryUserStorage implements UserStorage {
     public List<User> getFriends(Integer id) {
         findUserInMap(id);
         User user = users.get(id);
-        List<Integer> friendsId = user.getFriendsId().stream().map(Long::intValue).collect(Collectors.toList());
-        return friendsId.stream().map(users::get).collect(Collectors.toList());
+       List <User> users1 =  user.getFriendsId().stream()
+                .map(Long::intValue)
+                .map(users::get)
+                .collect(Collectors.toList());
+       return  users1;
     }
 
     public List<User> getCommonFriends(Integer id, Long overId) {
@@ -44,7 +47,10 @@ public class InMemoryUserStorage implements UserStorage {
         Set<Long> friendsId = user1.getFriendsId();
         Set<Long> friendsId1 = user2.getFriendsId();
         friendsId.retainAll(friendsId1);
-        return friendsId.stream().map(Long::intValue).map(users::get).collect(Collectors.toList());
+        return friendsId.stream()
+                .map(Long::intValue)
+                .map(users::get)
+                .collect(Collectors.toList());
     }
 
     public void saveUser(User user) {
@@ -52,7 +58,11 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public User updateUser(User user) {
-        users.put(user.getId(), user);
+        User oldUser = users.get(user.getId());
+        oldUser.setName(user.getName());
+        oldUser.setLogin(user.getLogin());
+        oldUser.setEmail(user.getEmail());
+        oldUser.setBirthday(user.getBirthday());
         return user;
     }
 
