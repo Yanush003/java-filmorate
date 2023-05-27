@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NoSuchCustomerException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
-import javax.validation.ConstraintViolationException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,33 +23,25 @@ public class InMemoryFilmStorage implements FilmStorage {
     private Integer countId = 1;
 
     public Film getFilm(Integer id) {
-        if (Objects.isNull(films.get(id))) throw new NoSuchCustomerException("not found");
+        if (Objects.isNull(films.get(id))) throw new NotFoundException("not found");
         return films.get(id);
     }
 
     public void putLike(Integer id, Long userId) {
-        if (Objects.isNull(userStorage.getUser(id))) {
-            User user = userStorage.getUser(id);
-            user.setFriendsId(new HashSet<>(userId.intValue()));
-            userStorage.saveUser(user);
-        } else {
-            User user = userStorage.getUser(id);
-            user.getFriendsId().add(userId);
-            userStorage.saveUser(user);
-        }
+        Film film = films.get(id);
+        film.getUserIds().add(userId.intValue());
     }
 
     public void deleteLike(Integer id, Long userId) {
-        User user = userStorage.getUser(userId.intValue());
-        if (Objects.isNull(user)) throw new NoSuchCustomerException("not found");
-        Set<Long> friendsId = user.getFriendsId();
-        friendsId.remove(userId);
-        userStorage.saveUser(user);
+        userStorage.getUser(userId.intValue());
+        Film film = getFilm(id);
+        film.getUserIds().remove(userId.intValue());
+
     }
 
     public List<Film> getFilms(Integer count) {
         return films.values().stream()
-                .sorted(Comparator.comparingInt(x -> x.getUserIds().size()))
+                .sorted((film1, film2) -> Integer.compare(film2.getUserIds().size(), film1.getUserIds().size()))
                 .limit(count)
                 .collect(Collectors.toList());
     }
@@ -65,11 +55,13 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     public Film updateFilm(Film film) {
         if (!films.containsKey(film.getId())) {
-            throw new ConstraintViolationException(Set.of());
+            throw new NotFoundException("not found");
         }
-        Film film1 = films.get(film.getId());
-        film.setId(film1.getId());
-        films.put(film.getId(), film);
+        Film oldFilm = films.get(film.getId());
+        oldFilm.setName(film.getName());
+        oldFilm.setReleaseDate(film.getReleaseDate());
+        oldFilm.setDuration(film.getDuration());
+        oldFilm.setDescription(film.getDescription());
         log.info("Film Update " + film);
         return film;
     }

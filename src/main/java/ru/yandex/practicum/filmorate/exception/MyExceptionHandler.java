@@ -27,8 +27,8 @@ public class MyExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
-    @ExceptionHandler(NoSuchCustomerException.class)
-    public ResponseEntity<?> handlerNotFoundException(NoSuchCustomerException e) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> handlerNotFoundException(NotFoundException e) {
         Map<String, String> errors = new LinkedHashMap<>();
         errors.put("error", "404");
         errors.put("message", e.getMessage());

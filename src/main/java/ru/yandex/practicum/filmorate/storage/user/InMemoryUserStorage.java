@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NoSuchCustomerException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.*;
@@ -13,15 +13,15 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Integer, User> users = new HashMap<>();
 
     public void addToFriendsById(Integer id, Long friendId) {
-        findUserInMap(id);
-        findUserInMap(friendId.intValue());
+        checkUserIsExisting(id);
+        checkUserIsExisting(friendId.intValue());
         findAndSaveFriend(id, friendId);
         findAndSaveFriend(friendId.intValue(), id.longValue());
     }
 
     public void deleteToFriendsById(Integer id, Long friendId) {
-        findUserInMap(id);
-        findUserInMap(friendId.intValue());
+        checkUserIsExisting(id);
+        checkUserIsExisting(friendId.intValue());
         User user = users.get(id);
         Set<Long> friendsId = user.getFriendsId();
         friendsId.remove(friendId);
@@ -30,7 +30,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public List<User> getFriends(Integer id) {
-        findUserInMap(id);
+        checkUserIsExisting(id);
         User user = users.get(id);
         List<User> users1 = user.getFriendsId().stream()
                 .map(Long::intValue)
@@ -40,14 +40,16 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public List<User> getCommonFriends(Integer id, Long overId) {
-        findUserInMap(id);
-        findUserInMap(overId.intValue());
+        checkUserIsExisting(id);
+        checkUserIsExisting(overId.intValue());
         User user1 = users.get(id);
         User user2 = users.get(overId.intValue());
         Set<Long> friendsId = user1.getFriendsId();
         Set<Long> friendsId1 = user2.getFriendsId();
-        friendsId.retainAll(friendsId1);
-        return friendsId.stream()
+        Set<Long> friendsIdCopy = new HashSet<>(friendsId);
+        Set<Long> friendsId1Copy = new HashSet<>(friendsId1);
+        friendsIdCopy.retainAll(friendsId1Copy);
+        return friendsIdCopy.stream()
                 .map(Long::intValue)
                 .map(users::get)
                 .collect(Collectors.toList());
@@ -67,6 +69,9 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public User getUser(Integer id) {
+        if (!users.containsKey(id)) {
+            throw new NotFoundException("not found");
+        }
         return users.get(id);
     }
 
@@ -74,19 +79,23 @@ public class InMemoryUserStorage implements UserStorage {
         return new ArrayList<>(users.values());
     }
 
-    public void findUserInMap(Integer id) {
-        if (!users.containsKey(id)) throw new NoSuchCustomerException(String.format("Указанный id %s не найден", id));
-        users.get(id);
+    public void checkUserIsExisting(Integer id) {
+        if (!users.containsKey(id)) {
+            throw new NotFoundException(String.format("Указанный id %s не найден", id));
+        }
+
     }
 
     private void findAndSaveFriend(Integer id, Long friendId) {
         User user1 = users.get(id);
         Set<Long> user1Friends = user1.getFriendsId();
-        if (Objects.isNull(user1Friends) || user1Friends.isEmpty()) {
+
+        if (Objects.isNull(user1Friends)) { //|| user1Friends.isEmpty()
             user1Friends = new HashSet<>();
+            user1.setFriendsId(user1Friends);
         }
         user1Friends.add(friendId);
-        user1.setFriendsId(user1Friends);
-        users.put(id, user1);
+
+        // users.put(id, user1);
     }
 }

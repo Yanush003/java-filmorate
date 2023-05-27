@@ -20,7 +20,7 @@ public class UserService {
     }
 
     public User getUserById(Integer id) {
-        storage.findUserInMap(id);
+        storage.checkUserIsExisting(id);
         return storage.getUser(id);
     }
 
@@ -57,7 +57,7 @@ public class UserService {
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
-        storage.findUserInMap(user.getId());
+        storage.checkUserIsExisting(user.getId());
         return storage.updateUser(user);
     }
 

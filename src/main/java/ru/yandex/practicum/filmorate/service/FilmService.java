@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -35,6 +36,9 @@ public class FilmService {
     }
 
     public Film saveFilm(Film film) {
+        if (film.getUserIds() == null) {
+            film.setUserIds(new HashSet<>());
+        }
         return storage.saveFilm(film);
     }
 
