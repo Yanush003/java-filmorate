@@ -15,7 +15,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 public class Film {
-    private Integer id;
+    private Long id;
     @NotBlank
     private String name;
     @Size(max = 200)
@@ -25,6 +25,6 @@ public class Film {
     @Positive
     private Integer duration;
 
-    private Set<Integer> userIds = new HashSet<>();
+    private Set<Long> userIds = new HashSet<>();
 
 }

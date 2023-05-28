@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 public class User {
-    private Integer id;
+    private Long id;
     private String name;
     @NotBlank(message = "Логин не может быть пустым")
     @Pattern(regexp = "\\S+", message = "Логин не может содержать пробелы")

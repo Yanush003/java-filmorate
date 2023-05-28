@@ -17,43 +17,48 @@ import java.util.stream.Collectors;
 public class InMemoryFilmStorage implements FilmStorage {
     private final InMemoryUserStorage userStorage;
 
-    private final Map<Integer, Film> films = new HashMap<>();
+    private final Map<Long, Film> films = new HashMap<>();
 
     private final Logger log = LoggerFactory.getLogger(FilmService.class);
-    private Integer countId = 1;
+    private Long countId = 1L;
 
-    public Film getFilm(Integer id) {
+    public Film get(Long id) {
         if (Objects.isNull(films.get(id))) throw new NotFoundException("not found");
         return films.get(id);
     }
 
-    public void putLike(Integer id, Long userId) {
+    @Override
+    public void delete(Long id) {
+        films.remove(id);
+    }
+
+    public void putLike(Long id, Long userId) {
         Film film = films.get(id);
-        film.getUserIds().add(userId.intValue());
+        film.getUserIds().add(userId);
     }
 
-    public void deleteLike(Integer id, Long userId) {
-        userStorage.getUser(userId.intValue());
-        Film film = getFilm(id);
-        film.getUserIds().remove(userId.intValue());
+    public void deleteLike(Long id, Long userId) {
+        userStorage.get(userId);
+        Film film = get(id);
+        film.getUserIds().remove(userId);
 
     }
 
-    public List<Film> getFilms(Integer count) {
+    public List<Film> getFilms(Long count) {
         return films.values().stream()
                 .sorted((film1, film2) -> Integer.compare(film2.getUserIds().size(), film1.getUserIds().size()))
                 .limit(count)
                 .collect(Collectors.toList());
     }
 
-    public Film saveFilm(Film film) {
+    public Film create(Film film) {
         film.setId(countId++);
         films.put(film.getId(), film);
         log.info("Film Save " + film);
         return film;
     }
 
-    public Film updateFilm(Film film) {
+    public Film update(Film film) {
         if (!films.containsKey(film.getId())) {
             throw new NotFoundException("not found");
         }
@@ -63,28 +68,18 @@ public class InMemoryFilmStorage implements FilmStorage {
         oldFilm.setDuration(film.getDuration());
         oldFilm.setDescription(film.getDescription());
         log.info("Film Update " + film);
-        return film;
+        return oldFilm;
     }
 
-    public List<Film> getListFilm() {
+    public List<Film> getAll() {
         log.info("Get Films " + films.values());
         return new ArrayList<>(films.values());
     }
 
     public void clearFilms() {
         this.films.clear();
-        countId = 0;
+        countId = 0L;
     }
 
-    public static <K, V extends Collection> Map<K, V> sortMap(Map<K, V> map, Integer count) {
-        return map.entrySet().stream()
-                .sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
-                .limit(count)
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new)
-                );
-    }
+
 }

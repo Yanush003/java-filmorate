@@ -16,22 +16,22 @@ public class FilmService {
         this.storage = storage;
     }
 
-    public Film getFilmById(Integer id) {
+    public Film getFilmById(Long id) {
         if (id == null) {
             throw new IllegalArgumentException();
         }
-        return storage.getFilm(id);
+        return storage.get(id);
     }
 
-    public void putLike(Integer id, Long like) {
+    public void putLike(Long id, Long like) {
         storage.putLike(id, like);
     }
 
-    public void deleteLike(Integer id, Long userId) {
+    public void deleteLike(Long id, Long userId) {
         storage.deleteLike(id, userId);
     }
 
-    public List<Film> getFilms(Integer count) {
+    public List<Film> getFilms(Long count) {
         return storage.getFilms(count);
     }
 
@@ -39,15 +39,15 @@ public class FilmService {
         if (film.getUserIds() == null) {
             film.setUserIds(new HashSet<>());
         }
-        return storage.saveFilm(film);
+        return storage.create(film);
     }
 
     public Film updateFilm(Film film) {
-        return storage.updateFilm(film);
+        return storage.update(film);
     }
 
     public List<Film> getListFilm() {
-        return storage.getListFilm();
+        return storage.getAll();
     }
 
     public void clearFilms() {

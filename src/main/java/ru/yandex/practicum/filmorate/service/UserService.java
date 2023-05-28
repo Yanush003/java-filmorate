@@ -11,7 +11,7 @@ import java.util.*;
 @Service
 public class UserService {
     private final Logger log = LoggerFactory.getLogger(FilmService.class);
-    private Integer countId = 1;
+    private Long countId = 1L;
 
     private final InMemoryUserStorage storage;
 
@@ -19,24 +19,24 @@ public class UserService {
         this.storage = storage;
     }
 
-    public User getUserById(Integer id) {
+    public User getUserById(Long id) {
         storage.checkUserIsExisting(id);
-        return storage.getUser(id);
+        return storage.get(id);
     }
 
-    public void addToFriendsById(Integer id, Long friendId) {
+    public void addToFriendsById(Long id, Long friendId) {
         storage.addToFriendsById(id, friendId);
     }
 
-    public void deleteToFriendsById(Integer id, Long friendId) {
+    public void deleteToFriendsById(Long id, Long friendId) {
         storage.deleteToFriendsById(id, friendId);
     }
 
-    public List<User> getSetFriends(Integer id) {
+    public List<User> getSetFriends(Long id) {
         return storage.getFriends(id);
     }
 
-    public List<User> getCommonFriends(Integer id, Long overId) {
+    public List<User> getCommonFriends(Long id, Long overId) {
         return storage.getCommonFriends(id, overId);
     }
 
@@ -48,7 +48,7 @@ public class UserService {
             user.setId(countId++);
         }
         user.setFriendsId(new HashSet<>());
-        storage.saveUser(user);
+        storage.create(user);
         log.info("User Save " + user);
         return user;
     }
@@ -58,11 +58,11 @@ public class UserService {
             user.setName(user.getLogin());
         }
         storage.checkUserIsExisting(user.getId());
-        return storage.updateUser(user);
+        return storage.update(user);
     }
 
     public List<User> getListUser() {
-        return storage.getUsers();
+        return storage.getAll();
     }
 
 }
