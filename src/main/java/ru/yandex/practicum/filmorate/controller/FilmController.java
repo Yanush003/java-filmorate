@@ -16,6 +16,29 @@ import java.util.List;
 public class FilmController {
     private final FilmService filmService;
 
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Long id) {
+        return filmService.getFilmById(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void putLike(@PathVariable Long id, @PathVariable Long userId) {
+        filmService.putLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void deleteLike(@PathVariable Long id, @PathVariable Long userId) {
+        filmService.deleteLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getFilms(@RequestParam(required = false, name = "count") Long count) {
+        if (count == null) {
+            count = 10L;
+        }
+        return filmService.getFilms(count);
+    }
+
     @PostMapping
     public Film saveFilm(@Valid @RequestBody Film film) {
         return filmService.saveFilm(film);
@@ -27,9 +50,8 @@ public class FilmController {
     }
 
     @GetMapping
-    public List<Film> getListFilm() {
+    public List<Film> getAllFilms() {
         return filmService.getListFilm();
     }
-
 
 }

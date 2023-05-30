@@ -15,6 +15,31 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Long id) {
+        return userService.getUserById(id);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addToFriendsById(@PathVariable Long id, @PathVariable Long friendId) {
+        userService.addToFriendsById(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFriendsById(@PathVariable Long id, @PathVariable Long friendId) {
+        userService.deleteToFriendsById(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public List<User> getFriends(@PathVariable Long id) {
+        return userService.getSetFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
+        return userService.getCommonFriends(id, otherId);
+    }
+
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         if (user.getName() == null || user.getName().equals("")) {
