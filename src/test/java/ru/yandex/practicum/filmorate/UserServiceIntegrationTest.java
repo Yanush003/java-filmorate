@@ -10,14 +10,15 @@ import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.time.LocalDate;
 import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserServiceIntegrationTest {
-    private final UserService userService;
 
+    private final UserService userService;
 
     @Test
     void testGetUserById() {
@@ -71,13 +72,12 @@ class UserServiceIntegrationTest {
 
     @Test
     void testDeleteFriendById() {
-// Создаем двух пользователей
+        // Создаем двух пользователей
         User user1 = new User();
         user1.setName("John");
         user1.setEmail("john123@gmail.com");
         user1.setBirthday(LocalDate.of(1990, 1, 1));
         User savedUser1 = userService.saveUser(user1);
-
 
         User user2 = new User();
         user2.setName("Mike");
@@ -86,17 +86,16 @@ class UserServiceIntegrationTest {
         user2.setBirthday(LocalDate.of(1990, 2, 2));
         User savedUser2 = userService.saveUser(user2);
 
-// Добавляем друга
+        // Добавляем друга
         if (!user1.getFriendsId().contains(savedUser2.getId())) {
             userService.addToFriendsById(savedUser1.getId(), savedUser2.getId());
         }
 
-// Удаляем друга
+        // Удаляем друга
         userService.deleteToFriendsById(savedUser1.getId(), savedUser2.getId());
 
-// Получаем пользователей и проверяем, что друг удален
+        // Получаем пользователя и проверяем, что друг удален
         User result1 = userService.getUserById(savedUser1.getId());
-      
 
         assertThat(result1.getFriendsId()).doesNotContain(savedUser2.getId());
 

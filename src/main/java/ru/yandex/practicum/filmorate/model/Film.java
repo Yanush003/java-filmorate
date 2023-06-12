@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.annotation.ValidDate;
 
 import javax.validation.constraints.NotBlank;
@@ -13,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class Film {
     private Long id;
@@ -26,5 +28,4 @@ public class Film {
     private Integer duration;
 
     private Set<Long> userIds = new HashSet<>();
-
 }
