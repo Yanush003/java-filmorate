@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 @Repository
 public class UserDbStorage implements UserStorage {
 
@@ -21,7 +20,6 @@ public class UserDbStorage implements UserStorage {
     @Autowired
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-
     }
 
     @Override
@@ -29,9 +27,7 @@ public class UserDbStorage implements UserStorage {
         String sqlQuery = "insert into USERS (NAME, LOGIN, EMAIL, BIRTHDAY) values (?, ?, ?, ?)";
         jdbcTemplate.update(sqlQuery, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday());
         String sqlSelectUser = "select * from USERS WHERE NAME = ? and LOGIN = ?";
-
-        User user1 = jdbcTemplate.queryForObject(sqlSelectUser, new Object[]{user.getName(), user.getLogin()}, new UserRowMapper());
-        return user1;
+        return jdbcTemplate.queryForObject(sqlSelectUser, new Object[]{user.getName(), user.getLogin()}, new UserRowMapper());
     }
 
     @Override
@@ -45,16 +41,13 @@ public class UserDbStorage implements UserStorage {
         }
         String sqlSelectUser = "select * from USERS WHERE ID = ?";
         User user1;
-
         user1 = jdbcTemplate.queryForObject(sqlSelectUser, new Object[]{user.getId()}, new UserRowMapper());
-
         return user1;
     }
 
     @Override
     public User get(Long id) {
         String sqlQuery = "select * from USERS where ID = ?";
-
         User user;
         try {
             user = jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new UserRowMapper());
@@ -63,7 +56,6 @@ public class UserDbStorage implements UserStorage {
         }
         return user;
     }
-
 
     @Override
     public void delete(Long id) {
@@ -89,8 +81,7 @@ public class UserDbStorage implements UserStorage {
 
     public List<Long> getFriendsById(Long id) {
         String sqlQuery = "select FRIEND_ID from FRIENDS WHERE USER_ID = ? AND FRIENDSHIP = TRUE";
-        List<Long> friends = jdbcTemplate.queryForList(sqlQuery, Long.class, id);
-        return friends;
+        return jdbcTemplate.queryForList(sqlQuery, Long.class, id);
     }
 
     public Set<Long> getByFilms(Long filmId) {

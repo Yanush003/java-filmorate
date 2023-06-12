@@ -60,9 +60,7 @@ public class FilmService {
 
     public List<Film> getAll() {
         return storage.getAll();
-
     }
-
 
     public Film saveFilm(Film film) {
         if (film.getUserIds() == null) {
@@ -70,8 +68,7 @@ public class FilmService {
         }
 
         log.info("Film Save " + film);
-        Film film1 = storage.create(film);
-        return film1;
+        return storage.create(film);
     }
 
     public Film updateFilm(Film film) {

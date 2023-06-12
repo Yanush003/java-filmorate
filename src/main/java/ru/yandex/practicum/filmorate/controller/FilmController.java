@@ -84,8 +84,7 @@ public class FilmController {
         }
         Mpa mpa = mpaService.getMpa(saveFilm.getId());
         List<GenreDto> genre = genreService.getGenre(saveFilm.getId());
-        FilmResponseDto filmResponseDto = mapToResponse(saveFilm, mpa, genre);
-        return filmResponseDto;
+        return mapToResponse(saveFilm, mpa, genre);
     }
 
     @PutMapping
@@ -106,9 +105,8 @@ public class FilmController {
         genres.clear();
         genres.addAll(set);
         MpaDto mpaDto = mapToDto(mpa);
-        FilmResponseDto filmResponseDto = new FilmResponseDto(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(),
+        return new FilmResponseDto(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(),
                 film.getDuration(), mpaDto, genres);
-        return filmResponseDto;
     }
 
     private static MpaDto mapToDto(Mpa mpa) {

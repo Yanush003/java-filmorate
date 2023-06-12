@@ -16,7 +16,6 @@ public class UserService {
 
     private final Logger log = LoggerFactory.getLogger(FilmService.class);
 
-
     public UserService(UserDbStorage storage) {
         this.storage = storage;
     }
@@ -30,21 +29,17 @@ public class UserService {
         checkAndGetUserIsExisting(id);
         checkAndGetUserIsExisting(friendId);
         storage.addFriend(id, friendId);
-
     }
 
     public void deleteToFriendsById(Long id, Long friendId) {
         checkAndGetUserIsExisting(id);
         checkAndGetUserIsExisting(friendId);
         storage.deleteFriends(id, friendId);
-
     }
 
     public List<User> getSetFriends(Long id) {
         List<Long> friendsById = storage.getFriendsById(id);
-        List<User> users = friendsById.stream().map(storage::get).collect(Collectors.toList());
-        return users;
-
+        return friendsById.stream().map(storage::get).collect(Collectors.toList());
     }
 
     public List<User> getCommonFriends(Long id, Long otherId) {
@@ -60,12 +55,10 @@ public class UserService {
             }
         }
         List<User> commonFriends = new ArrayList<>();
-
         for (Long friendId : commonFriendsId) {
             User user1 = storage.get(friendId);
             commonFriends.add(user1);
         }
-
         return commonFriends;
     }
 
@@ -74,7 +67,6 @@ public class UserService {
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
-
         user.setFriendsId(new HashSet<>());
         User user1 = storage.create(user);
         log.info("User Save " + user);
@@ -83,7 +75,6 @@ public class UserService {
 
     public User updateUser(User user) {
         Objects.requireNonNull(user, "User cannot be null");
-
         return storage.update(user);
     }
 

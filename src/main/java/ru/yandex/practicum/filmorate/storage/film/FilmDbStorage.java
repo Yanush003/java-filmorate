@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
 
-
 @Repository
 public class FilmDbStorage implements FilmStorage {
 
@@ -22,22 +21,16 @@ public class FilmDbStorage implements FilmStorage {
     public Film create(Film film) {
         String sqlQuery = "insert into FILMS (NAME, DESCRIPTION, RELEASE_DATE, DURATION) values (?, ?, ?, ?)";
         jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration());
-
         String sqlSelectFilm = "select * from FILMS WHERE name = ?";
-
-
-        Film film1 = jdbcTemplate.queryForObject(sqlSelectFilm, new Object[]{film.getName()}, new FilmRowMapper());
-        return film1;
+        return jdbcTemplate.queryForObject(sqlSelectFilm, new Object[]{film.getName()}, new FilmRowMapper());
     }
 
     @Override
     public Film update(Film film) {
         String sqlQuery = "update FILMS set NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ? where ID = ?";
         jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getId());
-
         String sqlDeleteLike = "delete from likes where film_id = ?";
         jdbcTemplate.update(sqlDeleteLike, film.getId());
-
         String sqlAddLike = "insert into likes (film_id, user_id) values (?, ?)";
         for (Long userId : film.getUserIds()) {
             jdbcTemplate.update(sqlAddLike, film.getId(), userId);
@@ -49,7 +42,6 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film get(Long id) {
         String sqlQuery = "select * from FILMS where ID = ?";
-
         Film film;
         try {
             film = jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new FilmRowMapper());
@@ -70,5 +62,4 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery = "select * from FILMS";
         return jdbcTemplate.query(sqlQuery, new FilmRowMapper());
     }
-
 }
