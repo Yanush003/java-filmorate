@@ -1,219 +1,211 @@
 package ru.yandex.practicum.filmorate;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class UserServiceIntegrationTest {
+public class UserServiceIntegrationTest {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserDbStorage userDbStorage;
 
     @Test
-    void testGetUserById() {
-        // Создаем пользователя
+    public void testSave() {
         User user = new User();
-        user.setName("John");
-        user.setLogin("john123");
-        user.setEmail("john123@gmail.com");
+        user.setName("John Doe");
+        user.setLogin("johndoe");
+        user.setEmail("johndoe@example.com");
         user.setBirthday(LocalDate.of(1990, 1, 1));
         User savedUser = userService.saveUser(user);
-
-        // Получаем пользователя по ID
-        User retrievedUser = userService.getUserById(savedUser.getId());
-
-        // Проверяем, что полученный пользователь соответствует ожидаемым значениям
-        assertThat(retrievedUser).isNotNull();
-        assertThat(retrievedUser.getId()).isEqualTo(savedUser.getId());
-        assertThat(retrievedUser.getName()).isEqualTo("John");
-        assertThat(retrievedUser.getLogin()).isEqualTo("john123");
-        assertThat(retrievedUser.getEmail()).isEqualTo("john123@gmail.com");
-        assertThat(retrievedUser.getBirthday()).isEqualTo(LocalDate.of(1990, 1, 1));
+        assertNotNull(savedUser.getId());
+        assertEquals(user.getName(), savedUser.getName());
+        assertEquals(user.getLogin(), savedUser.getLogin());
+        assertEquals(user.getEmail(), savedUser.getEmail());
+        assertEquals(user.getBirthday(), savedUser.getBirthday());
     }
 
     @Test
-    void testAddToFriendsById() {
-        // Создаем двух пользователей
+    public void testGetUserById() {
+        User user = new User();
+        user.setName("John Doe1");
+        user.setLogin("johndoe1");
+        user.setEmail("johndoe@example1.com");
+        user.setBirthday(LocalDate.of(1990, 1, 1));
+        User savedUser = userDbStorage.create(user);
+        User retrievedUser = userService.getUserById(savedUser.getId());
+        assertEquals(savedUser, retrievedUser);
+    }
+
+    @Test
+    public void testUpdateUser() {
+        User user = new User();
+        user.setName("John Doe2");
+        user.setLogin("johndoe2");
+        user.setEmail("johndoe@example2.com");
+        user.setBirthday(LocalDate.of(1990, 1, 1));
+        User savedUser = userDbStorage.create(user);
+        savedUser.setName("Jane Doe3");
+        User updatedUser = userService.updateUser(savedUser);
+        assertEquals(savedUser, updatedUser);
+    }
+
+    @Test
+    public void testAddToFriendsById() {
         User user1 = new User();
-        user1.setName("John");
-        user1.setLogin("john123");
-        user1.setEmail("john123@gmail.com");
+        user1.setName("John Doe4");
+        user1.setLogin("johndoe4");
+        user1.setEmail("johndoe@example4.com");
         user1.setBirthday(LocalDate.of(1990, 1, 1));
-        User savedUser1 = userService.saveUser(user1);
+        User savedUser1 = userDbStorage.create(user1);
 
         User user2 = new User();
-        user2.setName("Mike");
-        user2.setLogin("mike123");
-        user2.setEmail("mike123@gmail.com");
-        user2.setBirthday(LocalDate.of(1990, 2, 2));
-        User savedUser2 = userService.saveUser(user2);
+        user2.setName("Jane Doe5");
+        user2.setLogin("janedoe5");
+        user2.setEmail("janedoe@example5.com");
+        user2.setBirthday(LocalDate.of(1990, 1, 1));
+        User savedUser2 = userDbStorage.create(user2);
 
-        // Добавляем друга
         userService.addToFriendsById(savedUser1.getId(), savedUser2.getId());
 
-        // Получаем пользователей и проверяем, что друг добавлен
-        User result1 = userService.getUserById(savedUser1.getId());
-        User result2 = userService.getUserById(savedUser2.getId());
-
-        assertThat(result1.getFriendsId()).contains(savedUser2.getId());
-        assertThat(result2.getFriendsId()).contains(savedUser1.getId());
+        List<User> friends = userService.getSetFriends(savedUser1.getId());
+        assertEquals(1, friends.size());
+        assertEquals(savedUser2, friends.get(0));
     }
 
     @Test
-    void testDeleteFriendById() {
-        // Создаем двух пользователей
+    public void testDeleteToFriendsById() {
         User user1 = new User();
-        user1.setName("John");
-        user1.setEmail("john123@gmail.com");
+        user1.setName("John Doe6");
+        user1.setLogin("johndoe6");
+        user1.setEmail("johndoe@example6.com");
         user1.setBirthday(LocalDate.of(1990, 1, 1));
-        User savedUser1 = userService.saveUser(user1);
+        User savedUser1 = userDbStorage.create(user1);
 
         User user2 = new User();
-        user2.setName("Mike");
-        user2.setLogin("mike123");
-        user2.setEmail("mike123@gmail.com");
-        user2.setBirthday(LocalDate.of(1990, 2, 2));
-        User savedUser2 = userService.saveUser(user2);
+        user2.setName("Jane Doe7");
+        user2.setLogin("janedoe7");
+        user2.setEmail("janedoe@example7.com");
+        user2.setBirthday(LocalDate.of(1990, 1, 1));
+        User savedUser2 = userDbStorage.create(user2);
 
-        // Добавляем друга
-        if (!user1.getFriendsId().contains(savedUser2.getId())) {
-            userService.addToFriendsById(savedUser1.getId(), savedUser2.getId());
-        }
+        userService.addToFriendsById(savedUser1.getId(), savedUser2.getId());
 
-        // Удаляем друга
+        List<User> friends = userService.getSetFriends(savedUser1.getId());
+        assertEquals(1, friends.size());
+        assertEquals(savedUser2, friends.get(0));
+
         userService.deleteToFriendsById(savedUser1.getId(), savedUser2.getId());
 
-        // Получаем пользователя и проверяем, что друг удален
-        User result1 = userService.getUserById(savedUser1.getId());
-
-        assertThat(result1.getFriendsId()).doesNotContain(savedUser2.getId());
-
+        friends = userService.getSetFriends(savedUser1.getId());
+        assertEquals(0, friends.size());
     }
 
     @Test
-    void testGetSetFriends() {
-        // Создаем двух пользователей
+    public void testGetSetFriends() {
         User user1 = new User();
-        user1.setName("John");
-        user1.setLogin("john123");
-        user1.setEmail("john123@gmail.com");
+        user1.setName("John Doe8");
+        user1.setLogin("johndoe8");
+        user1.setEmail("johndoe@example8.com");
         user1.setBirthday(LocalDate.of(1990, 1, 1));
-        User savedUser1 = userService.saveUser(user1);
+        User savedUser1 = userDbStorage.create(user1);
 
         User user2 = new User();
-        user2.setName("Mike");
-        user2.setLogin("mike123");
-        user2.setEmail("mike123@gmail.com");
-        user2.setBirthday(LocalDate.of(1990, 2, 2));
-        User savedUser2 = userService.saveUser(user2);
+        user2.setName("Jane Doe9");
+        user2.setLogin("janedoe9");
+        user2.setEmail("janedoe@example9.com");
+        user2.setBirthday(LocalDate.of(1990, 1, 1));
+        User savedUser2 = userDbStorage.create(user2);
 
-        // Добавляем друга
         userService.addToFriendsById(savedUser1.getId(), savedUser2.getId());
 
-        // Получаем список друзей и проверяем, что список содержит добавленного друга
         List<User> friends = userService.getSetFriends(savedUser1.getId());
-
-        assertThat(friends).hasSize(1);
-        assertThat(friends.get(0).getId()).isEqualTo(savedUser2.getId());
+        assertEquals(1, friends.size());
+        assertEquals(savedUser2, friends.get(0));
     }
 
     @Test
-    void testGetCommonFriends() {
-        // Создаем три пользователя
+    public void testGetCommonFriends() {
         User user1 = new User();
-        user1.setName("John");
-        user1.setLogin("john123");
-        user1.setEmail("john123@gmail.com");
+        user1.setName("John Doe10");
+        user1.setLogin("johndoe10");
+        user1.setEmail("johndoe@example10.com");
         user1.setBirthday(LocalDate.of(1990, 1, 1));
-        User savedUser1 = userService.saveUser(user1);
+        User savedUser1 = userDbStorage.create(user1);
 
         User user2 = new User();
-        user2.setName("Mike");
-        user2.setLogin("mike123");
-        user2.setEmail("mike123@gmail.com");
-        user2.setBirthday(LocalDate.of(1990, 2, 2));
-        User savedUser2 = userService.saveUser(user2);
+        user2.setName("Jane Doe11");
+        user2.setLogin("janedoe11");
+        user2.setEmail("janedoe@example11.com");
+        user2.setBirthday(LocalDate.of(1990, 1, 1));
+        User savedUser2 = userDbStorage.create(user2);
 
         User user3 = new User();
-        user3.setName("Tom");
-        user3.setLogin("tom123");
-        user3.setEmail("tom123@gmail.com");
-        user3.setBirthday(LocalDate.of(1990, 3, 3));
-        User savedUser3 = userService.saveUser(user3);
+        user3.setName("Bob Smith");
+        user3.setLogin("bobsmith");
+        user3.setEmail("bobsmith@example.com");
+        user3.setBirthday(LocalDate.of(1990, 1, 1));
+        User savedUser3 = userDbStorage.create(user3);
 
-        // Добавляем друзей
         userService.addToFriendsById(savedUser1.getId(), savedUser2.getId());
         userService.addToFriendsById(savedUser1.getId(), savedUser3.getId());
         userService.addToFriendsById(savedUser2.getId(), savedUser3.getId());
 
-        // Получаем список общих друзей и проверяем, что список содержит только одного друга
         List<User> commonFriends = userService.getCommonFriends(savedUser1.getId(), savedUser2.getId());
-
-        assertThat(commonFriends).hasSize(1);
-        assertThat(commonFriends.get(0).getId()).isEqualTo(savedUser3.getId());
+        assertEquals(1, commonFriends.size());
+        assertEquals(savedUser3, commonFriends.get(0));
     }
 
     @Test
-    void testSaveUser() {
-        // Создаем пользователя
-        User user = new User();
-        user.setName("John");
-        user.setLogin("john123");
-        user.setEmail("john123@gmail.com");
-        user.setBirthday(LocalDate.of(1990, 1, 1));
+    public void testGetByFilms() {
+        User user1 = new User();
+        user1.setName("John Doe12");
+        user1.setLogin("johndoe12");
+        user1.setEmail("johndoe@example12.com");
+        user1.setBirthday(LocalDate.of(1990, 1, 1));
+        User savedUser1 = userDbStorage.create(user1);
 
-        // Сохраняем пользователя
-        User savedUser = userService.saveUser(user);
+        User user2 = new User();
+        user2.setName("Jane Doe13");
+        user2.setLogin("janedoe13");
+        user2.setEmail("janedoe@example13.com");
+        user2.setBirthday(LocalDate.of(1990, 1, 1));
+        User savedUser2 = userDbStorage.create(user2);
 
-        // Получаем пользователя и проверяем, что он соответствует ожидаемым значениям
-        User retrievedUser = userService.getUserById(savedUser.getId());
+        User user3 = new User();
+        user3.setName("Bob Smith14");
+        user3.setLogin("bobsmith14");
+        user3.setEmail("bobsmith@example14.com");
+        user3.setBirthday(LocalDate.of(1990, 1, 1));
+        User savedUser3 = userDbStorage.create(user3);
 
-        assertThat(retrievedUser).isNotNull();
-        assertThat(retrievedUser.getId()).isEqualTo(savedUser.getId());
-        assertThat(retrievedUser.getName()).isEqualTo("John");
-        assertThat(retrievedUser.getLogin()).isEqualTo("john123");
-        assertThat(retrievedUser.getEmail()).isEqualTo("john123@gmail.com");
-        assertThat(retrievedUser.getBirthday()).isEqualTo(LocalDate.of(1990, 1, 1));
-    }
+        Set<Long> expectedUsers = new HashSet<>();
+        expectedUsers.add(savedUser1.getId());
+        expectedUsers.add(savedUser2.getId());
 
-    @Test
-    void testUpdateUser() {
-        // Создаем пользователя
-        User user = new User();
-        user.setName("John");
-        user.setLogin("john123");
-        user.setEmail("john123@gmail.com");
-        user.setBirthday(LocalDate.of(1990, 1, 1));
-        User savedUser = userService.saveUser(user);
+        userService.addToFriendsById(savedUser1.getId(), savedUser2.getId());
+        userService.addToFriendsById(savedUser1.getId(), savedUser3.getId());
 
-        // Обновляем пользователя
-        User updatedUser = new User();
-        updatedUser.setId(savedUser.getId());
-        updatedUser.setName("John Smith");
-        updatedUser.setLogin("johnsmith123");
-        updatedUser.setEmail("johnsmith123@gmail.com");
-        updatedUser.setBirthday(LocalDate.of(1990, 2, 2));
-        userService.updateUser(updatedUser);
-
-        // Получаем пользователя и проверяем, что он соответствует ожидаемым значениям
-        User retrievedUser = userService.getUserById(savedUser.getId());
-
-        assertThat(retrievedUser).isNotNull();
-        assertThat(retrievedUser.getId()).isEqualTo(savedUser.getId());
-        assertThat(retrievedUser.getName()).isEqualTo("John Smith");
-        assertThat(retrievedUser.getLogin()).isEqualTo("johnsmith123");
-        assertThat(retrievedUser.getEmail()).isEqualTo("johnsmith123@gmail.com");
-        assertThat(retrievedUser.getBirthday()).isEqualTo(LocalDate.of(1990, 2, 2));
+        Set<Long> users = userService.getByFilms(1L);
+        assertEquals(expectedUsers, expectedUsers);
     }
 }

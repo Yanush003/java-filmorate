@@ -35,11 +35,12 @@ public class FilmServiceIntegrationTest {
     public void testGetFilmById() {
         // Создаем фильм в базе данных
         Film film = new Film();
-        film.setName("Test Film");
-        film.setDescription("Test Description");
+        film.setName("Test Film0");
+        film.setDescription("Test Description0");
         film.setReleaseDate(LocalDate.now());
         film.setDuration(120);
-        Film film1 = filmDbStorage.create(film);
+        Film film1 = filmDbStorage.create(film)
+                ;
 
         // Получаем фильм по ID
         Film result = filmService.getFilmById(film1.getId());
@@ -74,17 +75,18 @@ public class FilmServiceIntegrationTest {
     public void testDeleteLike() {
         // Создаем фильм в базе данных
         Film film = new Film();
-        film.setName("Test Film");
-        film.setDescription("Test Description");
+        film.setName("Test Film6");
+        film.setDescription("Test Description6");
         film.setReleaseDate(LocalDate.now());
         film.setDuration(120);
-        Film film1 = filmDbStorage.create(film);
+        Film film1 = filmDbStorage.create(film)
+                ;
 
         // Создаем пользователя в базе данных
         User user = new User();
-        user.setName("Test User");
-        user.setLogin("testuser");
-        user.setEmail("testuser@example.com");
+        user.setName("Test User2");
+        user.setLogin("testuser2");
+        user.setEmail("testuser@example2.com");
         user.setBirthday(LocalDate.now());
         User user1 = userService.saveUser(user);
 
@@ -149,13 +151,14 @@ public class FilmServiceIntegrationTest {
     public void testSaveFilm() {
         // Создаем фильм для сохранения
         Film film = new Film();
-        film.setName("Test Film");
-        film.setDescription("Test Description");
+        film.setName("Test Film4");
+        film.setDescription("Test Description4");
         film.setReleaseDate(LocalDate.now());
         film.setDuration(120);
 
         // Сохраняем фильм в базе данных
-        Film savedFilm = filmService.saveFilm(film);
+        Film savedFilm = filmService.saveFilm(film)
+                ;
 
         // Получаем фильм из базы данных
         Film result = filmDbStorage.get(savedFilm.getId());
@@ -168,8 +171,8 @@ public class FilmServiceIntegrationTest {
     public void testUpdateFilm() {
         // Создаем фильм для обновления
         Film film = new Film();
-        film.setName("Test Film");
-        film.setDescription("Test Description");
+        film.setName("Test Film5");
+        film.setDescription("Test Description5");
         film.setReleaseDate(LocalDate.now());
         film.setDuration(120);
         Film film1 = filmDbStorage.create(film);
@@ -185,4 +188,3 @@ public class FilmServiceIntegrationTest {
         assertEquals(film1, result);
     }
 }
-
