@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
@@ -9,12 +8,11 @@ import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class UserService {
 
     private final UserDbStorage storage;
-
-    private final Logger log = LoggerFactory.getLogger(FilmService.class);
 
     public UserService(UserDbStorage storage) {
         this.storage = storage;
@@ -68,9 +66,8 @@ public class UserService {
             user.setName(user.getLogin());
         }
         user.setFriendsId(new HashSet<>());
-        User user1 = storage.create(user);
         log.info("User Save " + user);
-        return user1;
+        return storage.create(user);
     }
 
     public User updateUser(User user) {
@@ -82,17 +79,9 @@ public class UserService {
         return storage.getAll();
     }
 
-    private void findAndSaveFriend(Long id, Long friendId) {
-        User user = storage.get(id);
-        Set<Long> userFriends = user.getFriendsId();
-        userFriends = Objects.requireNonNullElseGet(userFriends, HashSet::new);
-        userFriends.add(friendId);
-        storage.update(user);
-    }
-
-    public User checkAndGetUserIsExisting(Long id) {
+    public void checkAndGetUserIsExisting(Long id) {
         Objects.requireNonNull(id, "ID cannot be null");
-        return storage.get(id);
+        storage.get(id);
     }
 
     public Set<Long> getByFilms(Long filmId) {

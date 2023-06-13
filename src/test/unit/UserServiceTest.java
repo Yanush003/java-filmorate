@@ -6,7 +6,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

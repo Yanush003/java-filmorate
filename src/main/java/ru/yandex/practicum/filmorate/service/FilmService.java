@@ -1,27 +1,26 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
+@Slf4j
 @Service
 public class FilmService {
 
     private final FilmDbStorage storage;
-    private final UserService userService;
+    private final UserDbStorage userDbStorage;
 
-    private final Logger log = LoggerFactory.getLogger(FilmService.class);
-
-
-    public FilmService(FilmDbStorage storage, UserService userService) {
+    public FilmService(FilmDbStorage storage, UserDbStorage userDbStorage) {
         this.storage = storage;
-        this.userService = userService;
+        this.userDbStorage = userDbStorage;
     }
 
     public Film getFilmById(Long id) {
@@ -38,7 +37,7 @@ public class FilmService {
     }
 
     public void deleteLike(Long id, Long userId) {
-        userService.checkAndGetUserIsExisting(userId);
+        checkAndGetUserIsExisting(userId);
         Film film = storage.get(id);
         film.getUserIds().remove(userId);
         storage.update(film);
@@ -47,7 +46,7 @@ public class FilmService {
     public List<Film> getFilms(Integer count) {
         List<Film> films = storage.getAll();
         for (Film film : films) {
-            film.setUserIds(userService.getByFilms(film.getId()));
+            film.setUserIds(userDbStorage.getByFilms(film.getId()));
         }
 
         films.sort((film1, film2) -> Integer.compare(film2.getUserIds().size(), film1.getUserIds().size()));
@@ -76,6 +75,11 @@ public class FilmService {
         storage.get(film.getId());
         log.info("Film Update " + film);
         return storage.update(film);
+    }
+
+    public void checkAndGetUserIsExisting(Long id) {
+        Objects.requireNonNull(id, "ID cannot be null");
+        userDbStorage.get(id);
     }
 
 }
