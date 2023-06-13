@@ -39,8 +39,7 @@ public class FilmServiceIntegrationTest {
         film.setDescription("Test Description0");
         film.setReleaseDate(LocalDate.now());
         film.setDuration(120);
-        Film film1 = filmDbStorage.create(film)
-                ;
+        Film film1 = filmDbStorage.create(film);
 
         // Получаем фильм по ID
         Film result = filmService.getFilmById(film1.getId());
@@ -79,8 +78,7 @@ public class FilmServiceIntegrationTest {
         film.setDescription("Test Description6");
         film.setReleaseDate(LocalDate.now());
         film.setDuration(120);
-        Film film1 = filmDbStorage.create(film)
-                ;
+        Film film1 = filmDbStorage.create(film);
 
         // Создаем пользователя в базе данных
         User user = new User();
@@ -157,8 +155,7 @@ public class FilmServiceIntegrationTest {
         film.setDuration(120);
 
         // Сохраняем фильм в базе данных
-        Film savedFilm = filmService.saveFilm(film)
-                ;
+        Film savedFilm = filmService.saveFilm(film);
 
         // Получаем фильм из базы данных
         Film result = filmDbStorage.get(savedFilm.getId());
