@@ -33,7 +33,14 @@ public class MyExceptionHandler {
         errors.put("error", "404");
         errors.put("message", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
+    }
 
+    @ExceptionHandler(NotUpdateException.class)
+    public ResponseEntity<?> handlerNotUpdateException(NotUpdateException e) {
+        Map<String, String> errors = new LinkedHashMap<>();
+        errors.put("error", "400");
+        errors.put("message", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
     @ExceptionHandler(ValidationException.class)
